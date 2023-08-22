@@ -1,6 +1,10 @@
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { ValidationError } = require('../errors/validation-error');
+const { DuplicateError } = require('../errors/duplicate-error');
+const { AuthorizationError } = require('../errors/authorization-error');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -23,7 +27,11 @@ module.exports.updateUser = async (req, res, next) => {
     );
     res.send(user);
   } catch (error) {
-    next(error);
+    if (error instanceof mongoose.Error.ValidationError) {
+      next(new ValidationError('Некорректно заполнено одно из полей'));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -40,7 +48,13 @@ module.exports.createUser = async (req, res, next) => {
       name: user.name,
     });
   } catch (error) {
-    next(error);
+    if (error instanceof mongoose.Error.ValidationError) {
+      next(new ValidationError('Некорректно заполнено одно из полей'));
+    } else if (error.code === 11000) {
+      next(new DuplicateError('Пользователь с таким email уже существует'));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -50,10 +64,10 @@ module.exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      throw new Error('Неверные имя пользователя или пароль');
+      throw new AuthorizationError('Неверные имя пользователя или пароль');
     }
     const matched = await bcrypt.compare(password, user.password);
-    if (!matched) throw new Error('Неверные имя пользователя или пароль');
+    if (!matched) throw new AuthorizationError('Неверные имя пользователя или пароль');
 
     const token = jwt.sign(
       { _id: user._id },
@@ -66,7 +80,11 @@ module.exports.login = async (req, res, next) => {
       sameSite: true,
     }).send({ email: user.email });
   } catch (error) {
-    next(error);
+    if (error instanceof mongoose.Error.ValidationError) {
+      next(new ValidationError('Некорректно заполнено одно из полей'));
+    } else {
+      next(error);
+    }
   }
 };
 

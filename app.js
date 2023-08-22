@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { errorHandler } = require('./middlewares/error-handler');
 
 const { PORT = 3000 } = process.env;
 
@@ -21,5 +22,7 @@ app.use(requestLogger);
 app.use('', require('./routes/index'));
 
 app.use(errorLogger);
+
+app.use(errorHandler);
 
 app.listen(PORT);
