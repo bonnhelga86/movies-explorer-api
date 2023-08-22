@@ -12,6 +12,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
 
 app.use(requestLogger);
 
+app.use('', require('./routes/index'));
+
 app.use(errorLogger);
 
 app.listen(PORT);
