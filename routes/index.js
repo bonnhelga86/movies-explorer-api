@@ -12,3 +12,5 @@ router.post('/signout', logout);
 
 router.use('/users', require('./users'));
 router.use('/movies', require('./movies'));
+
+module.exports = router;

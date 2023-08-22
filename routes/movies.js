@@ -2,12 +2,12 @@ const router = require('express').Router();
 
 const {
   getMovies,
-  saveMovies,
-  deleteMovies,
-} = require('../controllers/users');
+  saveMovie,
+  deleteMovie,
+} = require('../controllers/movies');
 
 router.get('/', getMovies);
-router.post('/', saveMovies);
-router.delete('/:movieId', deleteMovies);
+router.post('/', saveMovie);
+router.delete('/:movieId', deleteMovie);
 
 module.exports = router;
