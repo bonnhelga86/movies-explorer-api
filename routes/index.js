@@ -1,4 +1,8 @@
 const router = require('express').Router();
+const {
+  loginValidator,
+  createUserValidator,
+} = require('../middlewares/userValidator');
 
 const {
   login,
@@ -8,8 +12,8 @@ const {
 
 const { auth } = require('../middlewares/auth');
 
-router.post('/signin', login);
-router.post('/signup', createUser);
+router.post('/signin', loginValidator, login);
+router.post('/signup', createUserValidator, createUser);
 
 router.use(auth);
 
