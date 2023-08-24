@@ -29,6 +29,8 @@ module.exports.updateUser = async (req, res, next) => {
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
       next(new ValidationError('Некорректно заполнено одно из полей'));
+    } else if (error.code === 11000) {
+      next(new DuplicateError('Пользователь с таким email уже существует'));
     } else {
       next(error);
     }
