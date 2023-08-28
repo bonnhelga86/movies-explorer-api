@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
@@ -21,9 +22,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
 });
 
 app.use(helmet());
-app.use(limiter);
 
 app.use(requestLogger);
+app.use(limiter);
 
 app.use('', require('./routes/index'));
 
