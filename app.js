@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: ['https://movies--explorer.nomoredomainsicu.ru/signup'],
+  origin: ['https://movies--explorer.nomoredomainsicu.ru'],
   credentials: true,
 }));
 
