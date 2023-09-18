@@ -28,7 +28,7 @@ module.exports.updateUser = async (req, res, next) => {
     res.send(user);
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
-      next(new ValidationError('Некорректно заполнено одно из полей'));
+      next(new ValidationError('При обновлении профиля произошла ошибка.'));
     } else if (error.code === 11000) {
       next(new DuplicateError('Пользователь с таким email уже существует'));
     } else {
@@ -51,7 +51,7 @@ module.exports.createUser = async (req, res, next) => {
     });
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
-      next(new ValidationError('Некорректно заполнено одно из полей'));
+      next(new ValidationError('При регистрации пользователя произошла ошибка.'));
     } else if (error.code === 11000) {
       next(new DuplicateError('Пользователь с таким email уже существует'));
     } else {
@@ -66,10 +66,10 @@ module.exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      throw new AuthorizationError('Неверные имя пользователя или пароль');
+      throw new AuthorizationError('Вы ввели неправильный логин или пароль.');
     }
     const matched = await bcrypt.compare(password, user.password);
-    if (!matched) throw new AuthorizationError('Неверные имя пользователя или пароль');
+    if (!matched) throw new AuthorizationError('Вы ввели неправильный логин или пароль.');
 
     const token = jwt.sign(
       { _id: user._id },
